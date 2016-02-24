@@ -22,10 +22,14 @@ namespace IocDemoConsole
 
     public class DemoWebService
     {
+        private FileLogger _logger;
+        public DemoWebService(FileLogger logger)
+        {
+            _logger = logger;
+        }
+
         public DemoWebResponse GetDLPoints(string dlNumber)
         {
-            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-
             DemoWebResponse webResponse = null;
             var requestUrl = ConfigurationManager.AppSettings["ServiceUrl"];
             if (!string.IsNullOrWhiteSpace(requestUrl))
@@ -53,13 +57,13 @@ namespace IocDemoConsole
                 }
                 catch (Exception e)
                 {
-                    logFile.WriteLine(e.Message);
+                    _logger.WriteLine(e.Message);
                     return null;
                 }
             }
             else
             {
-                logFile.WriteLine("No url defined. Returning control to caller");
+                _logger.WriteLine("No url defined. Returning control to caller");
             }
             return webResponse;
 

@@ -19,11 +19,12 @@ namespace IocDemoConsole
             string dlNumber = "12345678";
 
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-            var service = new DemoWebService();
+            var service = new DemoWebService(logFile);
             IDemoDbHelper dbHelper = new DemoDbHelper();
             var config = new DefaultConfigManager();
+            var formatter = new StringOutput(logFile);
 
-            var worker = new Worker(logFile, service, dbHelper, config);
+            var worker = new Worker(logFile, service, dbHelper, config, formatter);
             string output = worker.DoSomeStuff(dlNumber);
             Console.WriteLine(output);
 
@@ -38,13 +39,15 @@ namespace IocDemoConsole
         private DemoWebService _service;
         private IDemoDbHelper _dbHelper;
         private DefaultConfigManager _config;
+        private StringOutput _formatter;
         
-        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper, DefaultConfigManager config)
+        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper, DefaultConfigManager config, StringOutput formatter)
         {
             _logFile = logFile;
             _service = service;
             _dbHelper = helper;
             _config = config;
+            _formatter = formatter;
         }
 
         public string DoSomeStuff(string dlNumber)
@@ -64,7 +67,7 @@ namespace IocDemoConsole
             var dbResponses = _dbHelper.GetNewPoints(dlNumber, webResponse.Points);
 
             // Output the data
-            return new StringOutput().Format(dbResponses);
+            return _formatter.Format(dbResponses);
         }
     }
 }

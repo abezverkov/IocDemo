@@ -8,9 +8,15 @@ namespace IocDemoConsole
 {
     public class StringOutput
     {
+        private FileLogger _logger;
+        
+        public StringOutput(FileLogger logger)
+        {
+            _logger = logger;
+        }
+        
         public string Format(List<DemoDbResponse> dbResponses)
         {
-            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             var sb = new StringBuilder(4096);
             sb.AppendLine("========================");
             sb.AppendLine("These are my responses:");
@@ -21,7 +27,7 @@ namespace IocDemoConsole
                 sb.AppendLine(string.Format("{0} - PersonID:{1}  NewPoints:{2}", i, dbresponse.PersonID, dbresponse.Points));
             }
 
-            logFile.WriteLine("Success");
+            _logger.WriteLine("Success");
             return sb.ToString();
         }
     }
