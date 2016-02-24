@@ -31,7 +31,7 @@ namespace IocDemoConsole
     {
         public static string DoSomeStuff(string dlNumber)
         {
-            using (var logFile = File.CreateText(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now)))
+            using (var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now)))
             {
                 // Get some config data
                 var enabled = ConfigurationManager.AppSettings["Enabled"];
