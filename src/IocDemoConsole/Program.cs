@@ -42,115 +42,15 @@ namespace IocDemoConsole
                 }
 
                 // Pull some information from a service
-                DemoWebResponse webResponse = null;
-                var requestUrl = ConfigurationManager.AppSettings["ServiceUrl"];
-                if (!string.IsNullOrWhiteSpace(requestUrl))
-                {
-                    try
-                    {
-                        requestUrl = string.Format(requestUrl, dlNumber);
-                        HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
-                        using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
-                        {
-                            if (response.StatusCode != HttpStatusCode.OK)
-                                throw new Exception(String.Format(
-                                "Server error (HTTP {0}: {1}).",
-                                response.StatusCode,
-                                response.StatusDescription));
-                            using (var reader = new StreamReader(response.GetResponseStream()))
-                            {
-                                using (var jreader = new JsonTextReader(reader))
-                                {
-                                    var serializer = JsonSerializer.CreateDefault();
-                                    webResponse = serializer.Deserialize<DemoWebResponse>(jreader);
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        logFile.WriteLine(e.Message);
-                        return null;
-                    }
-                }
-                else
-                {
-                    logFile.WriteLine("No url defined. Returning control to caller");
-                    return "No url defined";
-                }
+                var service = new DemoWebService();
+                DemoWebResponse webResponse = service.GetDLPoints(dlNumber);
 
                 // Update/Pull some data from the DB
-                var dbResponses = new List<DemoDbResponse>();
-                var iocDemoDb = ConfigurationManager.ConnectionStrings["IocDemo"];
-                if (iocDemoDb != null)
-                {
-                    try
-                    {
-                        using (var connection = new SqlConnection(iocDemoDb.ConnectionString))
-                        {
-                            var updateCommand = connection.CreateCommand();
-                            updateCommand.CommandType = CommandType.StoredProcedure;
-                            updateCommand.CommandText = "UpdateDLPoints";
-                            updateCommand.Parameters.Add("DLNumber", SqlDbType.VarChar).Value = dlNumber;
-                            updateCommand.Parameters.Add("Points", SqlDbType.Int).Value = webResponse.Points;
-
-                            connection.Open();
-                            var dbreader = updateCommand.ExecuteReader();
-                            while (dbreader.Read())
-                            {
-                                dbResponses.Add(new DemoDbResponse()
-                                {
-                                    DLNumber = dbreader[0].ToString(),
-                                    PersonID = (int)dbreader[1],
-                                    Points = (int)dbreader[2],
-                                });
-
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        logFile.WriteLine(ex.ToString());
-                        return null;
-                    }
-                }
-                else
-                {
-                    logFile.WriteLine("No connectionstring defined. Returning control to caller");
-                    return "No connectionstring defined";
-                }
+                var dbResponses = DemoDbHelper.GetNewPoints(dlNumber, webResponse.Points);
 
                 // Output the data
-                var sb = new StringBuilder(4096);
-                sb.AppendLine("========================");
-                sb.AppendLine("These are my responses:");
-                sb.AppendLine("========================");
-                for (int i = 0; i < dbResponses.Count; i++)
-                {
-                    var dbresponse = dbResponses[i];
-                    sb.AppendLine(string.Format("{0} - PersonID:{1}  NewPoints:{2}", i, dbresponse.PersonID, dbresponse.Points));
-                }
-
-                logFile.WriteLine("Success");
-                return sb.ToString();
+                return new StringOutput().Format(dbResponses);
             }
         }
-    }
-
-    public class DemoWebResponse
-    {
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Language { get; set; }
-        public string DLState { get; set; }
-        public string DLNumber { get; set; }
-        public int Points { get; set; }
-    }
-
-    public class DemoDbResponse
-    {
-        public string DLNumber { get; set; }
-        public int PersonID { get; set; }
-        public int Points { get; set; }
     }
 }
