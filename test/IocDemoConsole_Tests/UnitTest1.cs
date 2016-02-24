@@ -1,14 +1,25 @@
 ﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using IocDemoConsole;
+using Moq;
+using NUnit.Framework;
 
 namespace IocDemoConsole_Tests
 {
-    [TestClass]
+    [TestFixture]
     public class UnitTest1
     {
-        [TestMethod]
+        [Test, Ignore]
         public void TestMethod1()
         {
+            // Arrange
+            var dl = "00000000";
+            var expected = "";
+
+            // Act
+            var actual = Worker.DoSomeStuff(dl);
+
+            // Assert
+            Assert.AreEqual(expected, actual);
         }
     }
 }
