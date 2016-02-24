@@ -20,10 +20,15 @@ namespace IocDemoConsole
         public int Points { get; set; }
     }
 
-    public class DemoWebService
+    public interface IDemoWebService
     {
-        private FileLogger _logger;
-        public DemoWebService(FileLogger logger)
+        DemoWebResponse GetDLPoints(string dlNumber);
+    }
+
+    public class DemoWebService : IDemoWebService
+    {
+        private ILogger _logger;
+        public DemoWebService(ILogger logger)
         {
             _logger = logger;
         }

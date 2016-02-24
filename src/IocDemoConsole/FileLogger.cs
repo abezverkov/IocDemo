@@ -7,7 +7,12 @@ using System.Threading.Tasks;
 
 namespace IocDemoConsole
 {
-    public class FileLogger
+    public interface ILogger
+    {
+        void WriteLine(string message);
+    }
+
+    public class FileLogger: ILogger
     {
         private string _filename;
         public FileLogger(string filename)

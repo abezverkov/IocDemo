@@ -7,7 +7,13 @@ using System.Threading.Tasks;
 
 namespace IocDemoConsole
 {
-    public class DefaultConfigManager
+    public interface IConfigManager
+    {
+        string GetAppSetting(string key);
+        string GetConnectionString(string key);
+    }
+
+    public class DefaultConfigManager : IConfigManager
     {
         public string GetAppSetting(string key)
         {

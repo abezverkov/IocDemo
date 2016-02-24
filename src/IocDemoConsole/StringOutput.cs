@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace IocDemoConsole
 {
-    public class StringOutput
+    public interface IOutputFormatter
     {
-        private FileLogger _logger;
+        string Format(List<DemoDbResponse> dbResponses);
+    }
+
+    public class StringOutput : IOutputFormatter
+    {
+        private ILogger _logger;
         
-        public StringOutput(FileLogger logger)
+        public StringOutput(ILogger logger)
         {
             _logger = logger;
         }

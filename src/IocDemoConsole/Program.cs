@@ -18,11 +18,11 @@ namespace IocDemoConsole
         {
             string dlNumber = "12345678";
 
-            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-            var service = new DemoWebService(logFile);
+            ILogger logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+            IDemoWebService service = new DemoWebService(logFile);
             IDemoDbHelper dbHelper = new DemoDbHelper();
-            var config = new DefaultConfigManager();
-            var formatter = new StringOutput(logFile);
+            IConfigManager config = new DefaultConfigManager();
+            IOutputFormatter formatter = new StringOutput(logFile);
 
             var worker = new Worker(logFile, service, dbHelper, config, formatter);
             string output = worker.DoSomeStuff(dlNumber);
@@ -35,13 +35,13 @@ namespace IocDemoConsole
 
     public class Worker
     {
-        private FileLogger _logFile;
-        private DemoWebService _service;
+        private ILogger _logFile;
+        private IDemoWebService _service;
         private IDemoDbHelper _dbHelper;
-        private DefaultConfigManager _config;
-        private StringOutput _formatter;
+        private IConfigManager _config;
+        private IOutputFormatter _formatter;
         
-        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper, DefaultConfigManager config, StringOutput formatter)
+        public Worker(ILogger logFile, IDemoWebService service, IDemoDbHelper helper, IConfigManager config, IOutputFormatter formatter)
         {
             _logFile = logFile;
             _service = service;

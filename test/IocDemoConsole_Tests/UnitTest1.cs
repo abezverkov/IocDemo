@@ -17,7 +17,7 @@ namespace IocDemoConsole_Tests
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             var service = new DemoWebService(logFile);
             IDemoDbHelper dbHelper = new DemoDbHelper();
-            var config = new DefaultConfigManager();
+            DefaultConfigManager config = new DefaultConfigManager();
             var formatter = new StringOutput(logFile);
             var worker = new Worker(logFile, service, dbHelper, config, formatter);
 
