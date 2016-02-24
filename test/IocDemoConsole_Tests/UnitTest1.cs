@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using IocDemoConsole;
 using Moq;
 using NUnit.Framework;
@@ -13,12 +14,18 @@ namespace IocDemoConsole_Tests
         {
             // Arrange
             var dl = "00000000";
-            var expected = "";
 
             var logFile = new Mock<ILogger>();
             var service = new Mock<IDemoWebService>();
+            service.Setup(s => s.GetDLPoints(It.IsAny<string>()))
+                .Returns(new DemoWebResponse()
+                {
+
+                });
             var dbHelper = new Mock<IDemoDbHelper>();
             var config = new Mock<IConfigManager>();
+            config.Setup(c => c.GetAppSetting("Enabled")).Returns("yes");
+
             var formatter = new Mock<IOutputFormatter>();
 
             var worker = new Worker(logFile.Object, service.Object, dbHelper.Object, config.Object, formatter.Object);
@@ -27,7 +34,9 @@ namespace IocDemoConsole_Tests
             var actual = worker.DoSomeStuff(dl);
 
             // Assert
-            Assert.AreEqual(expected, actual);
+            service.Verify(s => s.GetDLPoints(dl));
+            dbHelper.Verify(d => d.GetNewPoints(dl, It.IsAny<int>()));
+            formatter.Verify(f => f.Format(It.IsAny<List<DemoDbResponse>>()));
         }
     }
 }
