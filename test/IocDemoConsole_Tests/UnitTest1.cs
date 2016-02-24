@@ -16,7 +16,8 @@ namespace IocDemoConsole_Tests
             var expected = "";
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             var service = new DemoWebService();
-            var worker = new Worker(logFile, service);
+            IDemoDbHelper dbHelper = new DemoDbHelper();
+            var worker = new Worker(logFile, service, dbHelper);
 
             // Act
             var actual = worker.DoSomeStuff(dl);

@@ -20,8 +20,9 @@ namespace IocDemoConsole
 
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             var service = new DemoWebService();
+            IDemoDbHelper dbHelper = new DemoDbHelper();
 
-            var worker = new Worker(logFile, service);
+            var worker = new Worker(logFile, service, dbHelper);
             string output = worker.DoSomeStuff(dlNumber);
             Console.WriteLine(output);
 
@@ -34,11 +35,13 @@ namespace IocDemoConsole
     {
         private FileLogger _logFile;
         private DemoWebService _service;
+        private IDemoDbHelper _dbHelper;
         
-        public Worker(FileLogger logFile, DemoWebService service)
+        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper)
         {
             _logFile = logFile;
             _service = service;
+            _dbHelper = helper;
         }
 
         public string DoSomeStuff(string dlNumber)
@@ -55,7 +58,7 @@ namespace IocDemoConsole
             DemoWebResponse webResponse = _service.GetDLPoints(dlNumber);
 
             // Update/Pull some data from the DB
-            var dbResponses = DemoDbHelper.GetNewPoints(dlNumber, webResponse.Points);
+            var dbResponses = _dbHelper.GetNewPoints(dlNumber, webResponse.Points);
 
             // Output the data
             return new StringOutput().Format(dbResponses);

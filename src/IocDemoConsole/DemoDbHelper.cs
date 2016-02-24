@@ -16,8 +16,18 @@ namespace IocDemoConsole
         public int Points { get; set; }
     }
 
-    public class DemoDbHelper
+    public interface IDemoDbHelper
     {
+        List<DemoDbResponse> GetNewPoints(string dlNumber, int points);
+    }
+
+    public class DemoDbHelper: IDemoDbHelper
+    {
+        List<DemoDbResponse> IDemoDbHelper.GetNewPoints(string dlNumber, int points)
+        {
+            return DemoDbHelper.GetNewPoints(dlNumber, points);
+        }
+
         public static List<DemoDbResponse> GetNewPoints(string dlNumber, int points)
         {
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
