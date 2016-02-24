@@ -24,45 +24,45 @@ namespace IocDemoConsole
     {
         public DemoWebResponse GetDLPoints(string dlNumber)
         {
-            using (var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now)))
+            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+
+            DemoWebResponse webResponse = null;
+            var requestUrl = ConfigurationManager.AppSettings["ServiceUrl"];
+            if (!string.IsNullOrWhiteSpace(requestUrl))
             {
-                DemoWebResponse webResponse = null;
-                var requestUrl = ConfigurationManager.AppSettings["ServiceUrl"];
-                if (!string.IsNullOrWhiteSpace(requestUrl))
+                try
                 {
-                    try
+                    requestUrl = string.Format(requestUrl, dlNumber);
+                    HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
+                    using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
                     {
-                        requestUrl = string.Format(requestUrl, dlNumber);
-                        HttpWebRequest request = WebRequest.Create(requestUrl) as HttpWebRequest;
-                        using (HttpWebResponse response = request.GetResponse() as HttpWebResponse)
+                        if (response.StatusCode != HttpStatusCode.OK)
+                            throw new Exception(String.Format(
+                            "Server error (HTTP {0}: {1}).",
+                            response.StatusCode,
+                            response.StatusDescription));
+                        using (var reader = new StreamReader(response.GetResponseStream()))
                         {
-                            if (response.StatusCode != HttpStatusCode.OK)
-                                throw new Exception(String.Format(
-                                "Server error (HTTP {0}: {1}).",
-                                response.StatusCode,
-                                response.StatusDescription));
-                            using (var reader = new StreamReader(response.GetResponseStream()))
+                            using (var jreader = new JsonTextReader(reader))
                             {
-                                using (var jreader = new JsonTextReader(reader))
-                                {
-                                    var serializer = JsonSerializer.CreateDefault();
-                                    webResponse = serializer.Deserialize<DemoWebResponse>(jreader);
-                                }
+                                var serializer = JsonSerializer.CreateDefault();
+                                webResponse = serializer.Deserialize<DemoWebResponse>(jreader);
                             }
                         }
                     }
-                    catch (Exception e)
-                    {
-                        logFile.WriteLine(e.Message);
-                        return null;
-                    }
                 }
-                else
+                catch (Exception e)
                 {
-                    logFile.WriteLine("No url defined. Returning control to caller");
+                    logFile.WriteLine(e.Message);
+                    return null;
                 }
-                return webResponse;
             }
+            else
+            {
+                logFile.WriteLine("No url defined. Returning control to caller");
+            }
+            return webResponse;
+
         }
     }
 }

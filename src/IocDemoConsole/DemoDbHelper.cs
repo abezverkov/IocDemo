@@ -20,48 +20,48 @@ namespace IocDemoConsole
     {
         public static List<DemoDbResponse> GetNewPoints(string dlNumber, int points)
         {
-            using (var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now)))
+            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+
+            var dbResponses = new List<DemoDbResponse>();
+            var iocDemoDb = ConfigurationManager.ConnectionStrings["IocDemo"];
+            if (iocDemoDb != null)
             {
-                var dbResponses = new List<DemoDbResponse>();
-                var iocDemoDb = ConfigurationManager.ConnectionStrings["IocDemo"];
-                if (iocDemoDb != null)
+                try
                 {
-                    try
+                    using (var connection = new SqlConnection(iocDemoDb.ConnectionString))
                     {
-                        using (var connection = new SqlConnection(iocDemoDb.ConnectionString))
+                        var updateCommand = connection.CreateCommand();
+                        updateCommand.CommandType = CommandType.StoredProcedure;
+                        updateCommand.CommandText = "UpdateDLPoints";
+                        updateCommand.Parameters.Add("DLNumber", SqlDbType.VarChar).Value = dlNumber;
+                        updateCommand.Parameters.Add("Points", SqlDbType.Int).Value = points;
+
+                        connection.Open();
+                        var dbreader = updateCommand.ExecuteReader();
+                        while (dbreader.Read())
                         {
-                            var updateCommand = connection.CreateCommand();
-                            updateCommand.CommandType = CommandType.StoredProcedure;
-                            updateCommand.CommandText = "UpdateDLPoints";
-                            updateCommand.Parameters.Add("DLNumber", SqlDbType.VarChar).Value = dlNumber;
-                            updateCommand.Parameters.Add("Points", SqlDbType.Int).Value = points;
-
-                            connection.Open();
-                            var dbreader = updateCommand.ExecuteReader();
-                            while (dbreader.Read())
+                            dbResponses.Add(new DemoDbResponse()
                             {
-                                dbResponses.Add(new DemoDbResponse()
-                                {
-                                    DLNumber = dbreader[0].ToString(),
-                                    PersonID = (int)dbreader[1],
-                                    Points = (int)dbreader[2],
-                                });
+                                DLNumber = dbreader[0].ToString(),
+                                PersonID = (int)dbreader[1],
+                                Points = (int)dbreader[2],
+                            });
 
-                            }
                         }
                     }
-                    catch (Exception ex)
-                    {
-                        logFile.WriteLine(ex.ToString());
-                        return null;
-                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    logFile.WriteLine("No connectionstring defined. Returning control to caller");
+                    logFile.WriteLine(ex.ToString());
+                    return null;
                 }
-                return dbResponses;
             }
+            else
+            {
+                logFile.WriteLine("No connectionstring defined. Returning control to caller");
+            }
+            return dbResponses;
+
         }
     }
 }

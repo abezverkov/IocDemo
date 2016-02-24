@@ -7,36 +7,19 @@ using System.Threading.Tasks;
 
 namespace IocDemoConsole
 {
-    public class FileLogger: IDisposable
+    public class FileLogger
     {
-        private StreamWriter _logFile;
+        private string _filename;
         public FileLogger(string filename)
         {
-            _logFile = File.CreateText(filename);
-        }
-
-        ~FileLogger()
-        {
-            this.Dispose(false);
+            _filename = filename;
         }
 
         public void WriteLine(string message)
         {
-            _logFile.WriteLine(message);
-        }
-
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-            this.Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (disposing)
+            using (var _logFile = File.CreateText(_filename))
             {
-                _logFile.Flush();
-                _logFile.Dispose();
+                _logFile.WriteLine(message);
             }
         }
     }
