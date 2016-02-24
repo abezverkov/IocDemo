@@ -10,10 +10,11 @@ namespace IocDemoConsole
     {
         static void Main(string[] args)
         {
-            string output = DoSomeStuff();
+            string dl = "00000000";
+            string output = DoSomeStuff(dl);
         }
 
-        public static string DoSomeStuff()
+        public static string DoSomeStuff(string dl)
         {
             string output = null;
 
