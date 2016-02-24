@@ -21,8 +21,9 @@ namespace IocDemoConsole
             var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             var service = new DemoWebService();
             IDemoDbHelper dbHelper = new DemoDbHelper();
+            var config = new DefaultConfigManager();
 
-            var worker = new Worker(logFile, service, dbHelper);
+            var worker = new Worker(logFile, service, dbHelper, config);
             string output = worker.DoSomeStuff(dlNumber);
             Console.WriteLine(output);
 
@@ -36,18 +37,20 @@ namespace IocDemoConsole
         private FileLogger _logFile;
         private DemoWebService _service;
         private IDemoDbHelper _dbHelper;
+        private DefaultConfigManager _config;
         
-        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper)
+        public Worker(FileLogger logFile, DemoWebService service, IDemoDbHelper helper, DefaultConfigManager config)
         {
             _logFile = logFile;
             _service = service;
             _dbHelper = helper;
+            _config = config;
         }
 
         public string DoSomeStuff(string dlNumber)
         {
             // Get some config data
-            var enabled = ConfigurationManager.AppSettings["Enabled"];
+            var enabled = _config.GetAppSetting("Enabled");
             if (enabled != "yes")
             {
                 _logFile.WriteLine("Feature is not enabled. Returning control to caller");
