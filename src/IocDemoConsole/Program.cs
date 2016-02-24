@@ -18,31 +18,41 @@ namespace IocDemoConsole
         {
             string dlNumber = "12345678";
 
-            string output = Worker.DoSomeStuff(dlNumber);
-            Console.WriteLine(output);
+            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+            var service = new DemoWebService();
 
+            var worker = new Worker(logFile, service);
+            string output = worker.DoSomeStuff(dlNumber);
+            Console.WriteLine(output);
 
             Console.WriteLine("Press any key.");
             Console.Read();
         }
     }
 
-    public static class Worker
+    public class Worker
     {
-        public static string DoSomeStuff(string dlNumber)
+        private FileLogger _logFile;
+        private DemoWebService _service;
+        
+        public Worker(FileLogger logFile, DemoWebService service)
         {
-            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+            _logFile = logFile;
+            _service = service;
+        }
+
+        public string DoSomeStuff(string dlNumber)
+        {
             // Get some config data
             var enabled = ConfigurationManager.AppSettings["Enabled"];
             if (enabled != "yes")
             {
-                logFile.WriteLine("Feature is not enabled. Returning control to caller");
+                _logFile.WriteLine("Feature is not enabled. Returning control to caller");
                 return "Feature not enabled";
             }
 
             // Pull some information from a service
-            var service = new DemoWebService();
-            DemoWebResponse webResponse = service.GetDLPoints(dlNumber);
+            DemoWebResponse webResponse = _service.GetDLPoints(dlNumber);
 
             // Update/Pull some data from the DB
             var dbResponses = DemoDbHelper.GetNewPoints(dlNumber, webResponse.Points);

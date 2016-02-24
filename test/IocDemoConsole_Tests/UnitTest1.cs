@@ -14,9 +14,12 @@ namespace IocDemoConsole_Tests
             // Arrange
             var dl = "00000000";
             var expected = "";
+            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+            var service = new DemoWebService();
+            var worker = new Worker(logFile, service);
 
             // Act
-            var actual = Worker.DoSomeStuff(dl);
+            var actual = worker.DoSomeStuff(dl);
 
             // Assert
             Assert.AreEqual(expected, actual);
