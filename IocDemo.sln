@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.40629.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IocDemoConsole", "src\IocDemoConsole\IocDemoConsole.csproj", "{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{8C178804-3C16-44A0-A990-FD338AE9720C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1B46ABED-7716-4835-9355-FD534C574609}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IocDemoConsole_Tests", "test\IocDemoConsole_Tests\IocDemoConsole_Tests.csproj", "{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{AF346E1C-8685-4B09-B5C9-11E8B58BD7B7} = {8C178804-3C16-44A0-A990-FD338AE9720C}
+		{CAC92BC1-C7E7-4313-9040-D27BD2D07C38} = {1B46ABED-7716-4835-9355-FD534C574609}
+	EndGlobalSection
+EndGlobal
