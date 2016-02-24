@@ -8,18 +8,20 @@ namespace IocDemoConsole_Tests
     [TestFixture]
     public class UnitTest1
     {
-        [Test, Ignore]
+        [Test]
         public void TestMethod1()
         {
             // Arrange
             var dl = "00000000";
             var expected = "";
-            var logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-            var service = new DemoWebService(logFile);
-            IDemoDbHelper dbHelper = new DemoDbHelper();
-            DefaultConfigManager config = new DefaultConfigManager();
-            var formatter = new StringOutput(logFile);
-            var worker = new Worker(logFile, service, dbHelper, config, formatter);
+
+            var logFile = new Mock<ILogger>();
+            var service = new Mock<IDemoWebService>();
+            var dbHelper = new Mock<IDemoDbHelper>();
+            var config = new Mock<IConfigManager>();
+            var formatter = new Mock<IOutputFormatter>();
+
+            var worker = new Worker(logFile.Object, service.Object, dbHelper.Object, config.Object, formatter.Object);
 
             // Act
             var actual = worker.DoSomeStuff(dl);
