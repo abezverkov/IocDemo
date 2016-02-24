@@ -17,7 +17,13 @@ namespace IocDemoConsole
         static void Main(string[] args)
         {
             string dlNumber = "12345678";
+
             string output = Worker.DoSomeStuff(dlNumber);
+            Console.WriteLine(output);
+
+
+            Console.WriteLine("Press any key.");
+            Console.Read();
         }
     }
 
@@ -94,7 +100,9 @@ namespace IocDemoConsole
                             {
                                 dbResponses.Add(new DemoDbResponse()
                                 {
-                                    Info1 = dbreader[0].ToString(),
+                                    DLNumber = dbreader[0].ToString(),
+                                    PersonID = (int)dbreader[1],
+                                    Points = (int)dbreader[2],
                                 });
 
                             }
@@ -120,7 +128,7 @@ namespace IocDemoConsole
                 for (int i = 0; i < dbResponses.Count; i++)
                 {
                     var dbresponse = dbResponses[i];
-                    sb.AppendLine(string.Format("{0} - Info1:{1}", i, dbresponse.Info1));
+                    sb.AppendLine(string.Format("{0} - PersonID:{1}  NewPoints:{2}", i, dbresponse.PersonID, dbresponse.Points));
                 }
 
                 logFile.WriteLine("Success");
@@ -141,6 +149,8 @@ namespace IocDemoConsole
 
     public class DemoDbResponse
     {
-        public string Info1 { get; set; }
+        public string DLNumber { get; set; }
+        public int PersonID { get; set; }
+        public int Points { get; set; }
     }
 }

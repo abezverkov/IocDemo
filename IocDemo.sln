@@ -11,6 +11,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{1B46ABED-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IocDemoConsole_Tests", "test\IocDemoConsole_Tests\IocDemoConsole_Tests.csproj", "{CAC92BC1-C7E7-4313-9040-D27BD2D07C38}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sql", "sql", "{0D7A7510-FBC9-4568-9A97-6B2842CBC938}"
+	ProjectSection(SolutionItems) = preProject
+		testdata.sql = testdata.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
