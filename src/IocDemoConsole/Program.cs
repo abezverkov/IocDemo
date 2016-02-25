@@ -10,8 +10,13 @@ namespace IocDemoConsole
         static void Main(string[] args)
         {
             var container = new Container(new IocRegistry());
-            //var logger = new FileLogger("Bob.log");
-            //container.Configure(x => x.For<ILogger>().Use(logger));
+            
+            container.Configure(x => 
+            {
+                //var logger = new FileLogger("Bob.log");
+                //x.For<ILogger>().Use(logger);
+                x.For<IOutputFormatter>().Use<HtmlFormatter>();
+            });
             
             var worker = container.GetInstance<Worker>();
 

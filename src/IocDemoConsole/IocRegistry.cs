@@ -20,7 +20,7 @@ namespace IocDemoConsole
             For<ILogger>().Use<FileLogger>()
                 .Ctor<string>().Is(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now))
                 .Singleton();
-            For<IConfigManager>().Use<DefaultConfigManager>()
+            For<IConfigManager>().Use<DatabaseConfigManager>()
                 .Transient(); //default
             // Also:
             // AlwaysUnique

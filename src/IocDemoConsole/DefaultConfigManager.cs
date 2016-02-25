@@ -26,4 +26,18 @@ namespace IocDemoConsole
             return collection == null ? null : collection.ConnectionString;
         }
     }
+
+    public class DatabaseConfigManager : IConfigManager
+    {
+        public string GetAppSetting(string key)
+        {
+            return ConfigurationManager.AppSettings[key];
+        }
+
+        public string GetConnectionString(string key)
+        {
+            var collection = ConfigurationManager.ConnectionStrings[key];
+            return collection == null ? null : collection.ConnectionString;
+        }
+    }
 }
