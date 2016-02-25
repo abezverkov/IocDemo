@@ -10,13 +10,9 @@ namespace IocDemoConsole
         static void Main(string[] args)
         {
             var container = new Container(new IocRegistry());
+            //var logger = new FileLogger("Bob");
+            //container.Configure(x => x.For<ILogger>().Use(logger));
             
-            ILogger logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-            IDemoWebService service = new DemoWebService(logFile);
-            IDemoDbHelper dbHelper = new DemoDbHelper();
-            IConfigManager config = new DefaultConfigManager();
-            IOutputFormatter formatter = new StringOutput(logFile);
-
             var worker = container.GetInstance<Worker>();
 
             string dlNumber = "12345678";

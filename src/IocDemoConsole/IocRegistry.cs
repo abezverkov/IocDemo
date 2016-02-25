@@ -17,8 +17,16 @@ namespace IocDemoConsole
                 s.WithDefaultConventions();
             });
             For<IOutputFormatter>().Use<StringOutput>();
-            For<ILogger>().Use<FileLogger>().Ctor<string>().Is(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
-            For<IConfigManager>().Use<DefaultConfigManager>();
+            For<ILogger>().Use<FileLogger>()
+                .Ctor<string>().Is(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now))
+                .Singleton();
+            For<IConfigManager>().Use<DefaultConfigManager>()
+                .Transient(); //default
+            // Also:
+            // AlwaysUnique
+            // ThreadLocal
+            // ContainerScoped
+            // Note: 4.0 +
         }
     }
 }
