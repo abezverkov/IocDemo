@@ -3,12 +3,27 @@ using System.Collections.Generic;
 using IocDemoConsole;
 using Moq;
 using NUnit.Framework;
+using StructureMap;
+using StructureMap.Graph;
 
 namespace IocDemoConsole_Tests
 {
     [TestFixture]
     public class UnitTest1
     {
+        [Test]
+        public void TestDiContainer()
+        {
+            var container = new Container();
+            container.Configure(x =>
+            {
+                x.Scan(s => s.TheCallingAssembly());
+                x.For<IOutputFormatter>().Use<StringOutput>();
+            });
+
+            container.AssertConfigurationIsValid();
+        }
+
         [Test]
         [TestCase(null, "yes")]
         [TestCase("", "yes")]
