@@ -4,6 +4,7 @@ using IocDemoConsole;
 using Moq;
 using NUnit.Framework;
 using StructureMap;
+using StructureMap.AutoMocking.Moq;
 using StructureMap.Graph;
 using StructureMap.Pipeline;
 
@@ -36,30 +37,30 @@ namespace IocDemoConsole_Tests
         public void TestWorker(string dl, string enabled)
         {
             // Arrange
-            var logFile = new Mock<ILogger>();
-            var service = new Mock<IDemoWebService>();
-            service.Setup(s => s.GetDLPoints(It.IsAny<string>()))
+            var a = new MoqAutoMocker<Worker>();
+           
+
+            Mock.Get(a.Get<IDemoWebService>())
+                .Setup(s => s.GetDLPoints(It.IsAny<string>()))
                 .Returns(new DemoWebResponse()
                 {
 
                 });
-            var dbHelper = new Mock<IDemoDbHelper>();
-            var config = new Mock<IConfigManager>();
-            config.Setup(c => c.GetAppSetting("Enabled")).Returns(enabled);
+            Mock.Get(a.Get<IConfigManager>())
+                .Setup(c => c.GetAppSetting("Enabled"))
+                .Returns(enabled);
 
-            var formatter = new Mock<IOutputFormatter>();
-
-            var worker = new Worker(logFile.Object, service.Object, dbHelper.Object, config.Object, formatter.Object);
+            var worker = a.ClassUnderTest;
 
             // Act
             var actual = worker.DoSomeStuff(dl);
 
             // Assert
-            service.Verify(s => s.GetDLPoints(dl));
-            dbHelper.Verify(d => d.GetNewPoints(dl, It.IsAny<int>()));
-            formatter.Verify(f => f.Format(It.IsAny<List<DemoDbResponse>>()));
-            
-            logFile.Verify(l => l.WriteLine(It.IsAny<string>()), Times.Never);
+            Mock.Get(a.Get<IDemoWebService>()).Verify(s => s.GetDLPoints(dl));
+            Mock.Get(a.Get<IDemoDbHelper>()).Verify(d => d.GetNewPoints(dl, It.IsAny<int>()));
+            Mock.Get(a.Get<IOutputFormatter>()).Verify(f => f.Format(It.IsAny<List<DemoDbResponse>>()));
+
+            Mock.Get(a.Get<ILogger>()).Verify(l => l.WriteLine(It.IsAny<string>()), Times.Never);
         }
     }
 }
