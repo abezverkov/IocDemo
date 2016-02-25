@@ -9,13 +9,8 @@ namespace IocDemoConsole
     {
         static void Main(string[] args)
         {
-            var container = new Container();
-            container.Configure(x =>
-            {
-                x.Scan(s => s.TheCallingAssembly());                
-                x.For<IOutputFormatter>().Use<StringOutput>();
-            });
-
+            var container = new Container(new IocRegistry());
+            
             ILogger logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             IDemoWebService service = new DemoWebService(logFile);
             IDemoDbHelper dbHelper = new DemoDbHelper();

@@ -60,6 +60,7 @@
     <Compile Include="DemoDbHelper.cs" />
     <Compile Include="DemoWebService.cs" />
     <Compile Include="FileLogger.cs" />
+    <Compile Include="IocRegistry.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="StringOutput.cs" />

@@ -14,13 +14,7 @@ namespace IocDemoConsole_Tests
         [Test]
         public void TestDiContainer()
         {
-            var container = new Container();
-            container.Configure(x =>
-            {
-                x.Scan(s => s.TheCallingAssembly());
-                x.For<IOutputFormatter>().Use<StringOutput>();
-            });
-
+            var container = new Container(new IocRegistry());
             container.AssertConfigurationIsValid();
         }
 
@@ -29,7 +23,7 @@ namespace IocDemoConsole_Tests
         [TestCase("", "yes")]
         [TestCase("00000000", "yes")]
         [TestCase("12345678", "yes")]
-        public void TestMethod1(string dl, string enabled)
+        public void TestWorker(string dl, string enabled)
         {
             // Arrange
             var logFile = new Mock<ILogger>();
