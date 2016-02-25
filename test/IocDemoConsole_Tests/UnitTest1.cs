@@ -10,11 +10,13 @@ namespace IocDemoConsole_Tests
     public class UnitTest1
     {
         [Test]
-        public void TestMethod1()
+        [TestCase(null, "yes")]
+        [TestCase("", "yes")]
+        [TestCase("00000000", "yes")]
+        [TestCase("12345678", "yes")]
+        public void TestMethod1(string dl, string enabled)
         {
             // Arrange
-            var dl = "00000000";
-
             var logFile = new Mock<ILogger>();
             var service = new Mock<IDemoWebService>();
             service.Setup(s => s.GetDLPoints(It.IsAny<string>()))
@@ -24,7 +26,7 @@ namespace IocDemoConsole_Tests
                 });
             var dbHelper = new Mock<IDemoDbHelper>();
             var config = new Mock<IConfigManager>();
-            config.Setup(c => c.GetAppSetting("Enabled")).Returns("yes");
+            config.Setup(c => c.GetAppSetting("Enabled")).Returns(enabled);
 
             var formatter = new Mock<IOutputFormatter>();
 
@@ -37,6 +39,8 @@ namespace IocDemoConsole_Tests
             service.Verify(s => s.GetDLPoints(dl));
             dbHelper.Verify(d => d.GetNewPoints(dl, It.IsAny<int>()));
             formatter.Verify(f => f.Format(It.IsAny<List<DemoDbResponse>>()));
+            
+            logFile.Verify(l => l.WriteLine(It.IsAny<string>()), Times.Never);
         }
     }
 }
