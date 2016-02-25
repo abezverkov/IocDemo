@@ -18,6 +18,7 @@ namespace IocDemoConsole
             });
             For<IOutputFormatter>().Use<StringOutput>();
             For<ILogger>().Use<FileLogger>().Ctor<string>().Is(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
+            For<IConfigManager>().Use<DefaultConfigManager>();
         }
     }
 }

@@ -19,6 +19,13 @@ namespace IocDemoConsole_Tests
         }
 
         [Test]
+        public void TestWorkerDi()
+        {
+            var container = new Container(new IocRegistry());
+            var worker = container.GetInstance<Worker>();
+        }
+
+        [Test]
         [TestCase(null, "yes")]
         [TestCase("", "yes")]
         [TestCase("00000000", "yes")]
