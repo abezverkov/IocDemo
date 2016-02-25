@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Data.SqlClient;
-using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using StructureMap;
+using StructureMap.Graph;
 
 namespace IocDemoConsole
 {
@@ -16,7 +9,12 @@ namespace IocDemoConsole
     {
         static void Main(string[] args)
         {
-            string dlNumber = "12345678";
+            var container = new Container();
+            container.Configure(x =>
+            {
+                x.Scan(s => s.TheCallingAssembly());                
+                x.For<IOutputFormatter>().Use<StringOutput>();
+            });
 
             ILogger logFile = new FileLogger(string.Format("IocDemo_{0:yyyyMMdd}.log", DateTime.Now));
             IDemoWebService service = new DemoWebService(logFile);
@@ -24,7 +22,9 @@ namespace IocDemoConsole
             IConfigManager config = new DefaultConfigManager();
             IOutputFormatter formatter = new StringOutput(logFile);
 
-            var worker = new Worker(logFile, service, dbHelper, config, formatter);
+            var worker = container.GetInstance<Worker>();
+
+            string dlNumber = "12345678";
             string output = worker.DoSomeStuff(dlNumber);
             Console.WriteLine(output);
 
