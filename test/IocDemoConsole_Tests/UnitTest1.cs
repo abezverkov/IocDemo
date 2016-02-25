@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using StructureMap;
 using StructureMap.Graph;
+using StructureMap.Pipeline;
 
 namespace IocDemoConsole_Tests
 {
@@ -16,6 +17,8 @@ namespace IocDemoConsole_Tests
         {
             var container = new Container(new IocRegistry());
             container.AssertConfigurationIsValid();
+
+            Assert.IsInstanceOf<SingletonLifecycle>(container.Model.For<ILogger>().Default.Lifecycle);
         }
 
         [Test]
